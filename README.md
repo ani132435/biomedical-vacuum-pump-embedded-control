@@ -1,12 +1,12 @@
-﻿# Biomedical Vacuum Pump — Embedded Control System
+﻿# Biomedical Vacuum Pump - Embedded Control System
 
-An embedded systems and biomedical instrumentation project focused on developing a pressure-controlled vacuum pump prototype using a microcontroller, pressure sensing, motor control, and experimental characterization.
+An embedded systems and biomedical instrumentation project focused on developing a pressure-monitored vacuum-pump prototype using a microcontroller, pressure sensing, motor control, and experimental characterisation.
 
 ## Project Overview
 
-This project explores the development of a biomimetic vacuum generation system inspired by the pressure-control requirements of a breast pump.
+This project explores the development of a biomimetic vacuum-generation system inspired by the pressure-control requirements of a breast pump.
 
-The prototype combines a DC vacuum pump, pressure sensor, motor driver, and Raspberry Pi Pico 2W running MicroPython. Experimental work has focused on pressure measurement, PWM-based motor control, and characterization of the relationship between motor duty cycle and generated vacuum.
+The prototype combines a DC vacuum pump, pressure sensor, motor driver, and Raspberry Pi Pico 2W running MicroPython. Experimental work has focused on pressure measurement, PWM-based motor control, and characterisation of the relationship between motor duty cycle and generated vacuum.
 
 The project also includes preliminary closed-loop control development, mechanical CAD modelling, and experimental data analysis.
 
@@ -17,9 +17,9 @@ The project also includes preliminary closed-loop control development, mechanica
 - Develop an embedded platform for vacuum generation and pressure monitoring.
 - Interface a BMP280 pressure sensor with a Raspberry Pi Pico 2W.
 - Implement PWM-based DC motor control.
-- Characterize vacuum response at different motor duty cycles.
+- Characterise vacuum response at different motor duty cycles.
 - Explore PI-based pressure regulation.
-- Develop preliminary mechanical models for the pump and solenoid valve assemblies.
+- Develop preliminary mechanical models for the pump and solenoid-valve assemblies.
 - Document experimental observations and identify areas for further development.
 
 ## System Architecture
@@ -39,7 +39,7 @@ flowchart TD
     G -.-> I[Solenoid Valve - Integration Pending]
 ```
 
-The pressure sensor provides absolute pressure measurements. Gauge pressure is calculated relative to the atmospheric reference.
+The pressure sensor provides absolute-pressure measurements. Gauge pressure is calculated relative to the atmospheric reference.
 
 See [System Architecture](docs/architecture/system-architecture.md) for further details.
 
@@ -47,64 +47,58 @@ See [System Architecture](docs/architecture/system-architecture.md) for further 
 
 | Component | Description |
 |---|---|
-| Raspberry Pi Pico 2W | Main embedded controller |
-| BMP280 | Pressure measurement over I2C |
+| Raspberry Pi Pico 2W | Later embedded controller |
+| BMP280 | Absolute-pressure measurement over I2C |
 | L298N | DC motor driver |
 | KMDP-U1-24V | Vacuum pump |
 | CKS5001/04 | Solenoid valve; integration under development |
 | XL6009 | DC-DC converter used during development |
 
-### Important hardware specifications
+### Pump specifications
 
-The KMDP-U1-24V pump documentation specifies a 24 V rating, 12 W power rating, nominal flow specification of 10 L/min, and maximum vacuum specification of approximately -70 kPa.
+The KMDP-U1-24V pump documentation records a 24 V rating, 12 W power rating, stated flow rate of 10 L/min, and stated maximum vacuum of approximately -70 kPa.
 
 These are component specifications, not measured prototype performance.
 
-Detailed information is available in [Hardware Design](docs/hardware/hardware-design.md).
+See [Hardware Design](docs/hardware/hardware-design.md) for component details and hardware limitations.
 
 ## Firmware and Software
 
-**Embedded platform:** Raspberry Pi Pico 2W
-**Firmware language:** MicroPython
-**Sensor interface:** I2C
-**Motor control:** PWM and GPIO direction control
-**Data analysis:** Python
-**Mechanical modelling:** FreeCAD
-**Electrical design:** KiCad
+| Area | Platform or method |
+|---|---|
+| Embedded controller | Raspberry Pi Pico 2W |
+| Firmware language | MicroPython |
+| Sensor interface | I2C |
+| Motor control | PWM and GPIO direction control |
+| Data analysis | Python |
+| Mechanical modelling | FreeCAD |
+| Electrical design reference | KiCad |
 
-The firmware repository includes:
+The firmware source includes BMP280 drivers, motor-control modules, a preliminary PI controller, basic operating-mode and state-management modules, and hardware test scripts.
 
-- BMP280 sensor drivers and pressure measurement modules.
-- DC motor PWM and direction control.
-- Preliminary PI controller implementation.
-- Basic operating-mode and state-management modules.
-- Hardware interface tests and experimental scripts.
-
-The source tree contains multiple development iterations and sensor-driver interfaces. These are documented, but should not yet be considered a single fully integrated firmware release.
+The source tree contains multiple development iterations and sensor-driver interfaces. It should not yet be treated as one fully integrated firmware release.
 
 See [Firmware Documentation](docs/firmware/firmware-documentation.md).
 
 ## Experimental Work
 
-Experimental characterization has been conducted to investigate the relationship between PWM duty cycle and generated vacuum.
+Experimental characterisation has been conducted to investigate the relationship between PWM duty cycle and generated vacuum.
 
-The test routines include:
+The documented test routines include:
 
 - PWM-based pump operation at multiple duty-cycle levels.
 - Pressure measurement and serial data collection.
-- Atmospheric reference checks.
+- Atmospheric-reference checks.
 - Analysis of transient response and observed pressure behaviour.
-- Generation of plots and CSV summaries using Python.
+- Generation of plots and summaries using Python.
 
 ### Preliminary observations
 
-The intended application range was approximately -50 to -200 mmHg gauge pressure.
+The intended application range was approximately **-50 to -200 mmHg gauge pressure**.
 
-The documented prototype experiments produced approximately -3 to -11 mmHg gauge pressure under the tested conditions.
+The documented prototype experiments produced approximately **-3 to -11 mmHg gauge pressure** under the tested conditions. Substantial development is therefore still required before the intended operating range can be achieved.
 
-This indicates that substantial development is still required before the intended operating range can be achieved.
-
-The experimental results should be interpreted in the context of the documented test conditions and prototype configuration.
+The results should be interpreted in the context of the documented test conditions and prototype configuration.
 
 ### Experimental plots
 
@@ -116,18 +110,13 @@ The experimental results should be interpreted in the context of the documented 
 
 ![Pressure versus PWM](experiments/results/final_session_pressure_vs_pwm.png)
 
-Additional experimental plots and datasets are available in the [experiments/results](experiments/results/) directory.
+Additional plots and datasets are available in [experiments/results](experiments/results/).
 
 ## Mechanical Design
 
 Preliminary FreeCAD models were developed for selected pump and valve components using physical measurements.
 
-The repository includes:
-
-- Motor sleeve model.
-- Solenoid valve model.
-- Motor and valve measurement documentation.
-- Reference photographs and mechanical files.
+The repository includes motor-sleeve and solenoid-valve models, measurement documentation, reference photographs, and mechanical files.
 
 These models are preliminary and have not been fully fabricated or validated.
 
@@ -135,42 +124,34 @@ These models are preliminary and have not been fully fabricated or validated.
 
 ```text
 biomedical-vacuum-pump-embedded-control/
-|
-|-- docs/
-|   |-- architecture/
-|   |-- experiments/
-|   |-- firmware/
-|   |-- hardware/
-|   |-- project-status.md
-|
-|-- electronics/
-|   |-- kicad/
-|
-|-- experiments/
-|   |-- analysis/
-|   |-- raw_data/
-|   |-- results/
-|
-|-- firmware/
-|   |-- control/
-|   |-- drivers/
-|   |-- tests/
-|
-|-- mechanical/
-|   |-- cad/
-|   |-- measurements/
-|
-|-- media/
-|   |-- diagrams/
-|   |-- plots/
-|   |-- prototype/
-|
-|-- research/
-|   |-- literature/
-|   |-- notes/
-|
-|-- README.md
-|-- .gitignore
+├── docs/
+│   ├── architecture/
+│   ├── experiments/
+│   ├── firmware/
+│   ├── hardware/
+│   ├── reproduction/
+│   └── project-status.md
+├── electronics/
+│   └── kicad/
+├── experiments/
+│   ├── analysis/
+│   ├── raw_data/
+│   └── results/
+├── firmware/
+│   ├── control/
+│   ├── drivers/
+│   └── tests/
+├── mechanical/
+│   ├── cad/
+│   └── measurements/
+├── media/
+│   ├── diagrams/
+│   ├── plots/
+│   └── prototype/
+├── research/
+│   ├── literature/
+│   └── notes/
+└── README.md
 ```
 
 ## Documentation
@@ -178,35 +159,46 @@ biomedical-vacuum-pump-embedded-control/
 | Document | Description |
 |---|---|
 | [System Architecture](docs/architecture/system-architecture.md) | System-level design and interfaces |
-| [Hardware Design](docs/hardware/hardware-design.md) | Hardware components and preliminary design |
-| [Firmware Documentation](docs/firmware/firmware-documentation.md) | Firmware modules and implementation |
+| [Hardware Design](docs/hardware/hardware-design.md) | Hardware components and development notes |
+| [Firmware Documentation](docs/firmware/firmware-documentation.md) | Firmware modules, interfaces, and limitations |
 | [Experimental Methodology](docs/experiments/experimental-methodology.md) | Experimental procedures and conditions |
 | [Results and Analysis](docs/experiments/results-and-analysis.md) | Experimental data and observations |
-| [Project Status](docs/project-status.md) | Completed work and remaining tasks |
+| [Project Status and Future Work](docs/project-status.md) | Completed work and remaining tasks |
+| [Reproduction and Simulation Guide](docs/reproduction/simulation-and-reproduction-guide.md) | Clone the repository, inspect data, reproduce analysis, and understand simulation scope |
 
 ## Current Development Status
 
 | Subsystem | Status |
 |---|---|
 | Pump and sensor experimentation | Preliminary testing completed |
-| PWM motor control | Implemented and tested experimentally |
+| PWM motor control | Implemented in source and used experimentally |
 | Pressure measurement | Implemented; further calibration and integration required |
 | Experimental data analysis | Completed for documented datasets |
 | Mechanical CAD | Preliminary models developed |
 | PI pressure control | Preliminary implementation; tuning and validation pending |
-| Solenoid valve integration | Pending |
-| Fully integrated system | In progress |
+| Solenoid-valve integration | Incomplete |
+| Unified firmware application | Requires further integration |
+| Validated end-to-end pump simulation | Not currently provided |
 
 ## Future Work
 
 - Reconcile and consolidate the BMP280 driver interfaces.
 - Establish and verify the final hardware wiring and power arrangement.
-- Improve the pneumatic assembly and investigate vacuum leakage.
-- Integrate and validate solenoid valve operation.
+- Improve the pneumatic assembly and investigate leakage.
+- Integrate and validate solenoid-valve operation.
 - Tune and test the PI pressure controller.
 - Perform repeatable closed-loop pressure-control experiments.
 - Evaluate system response, stability, and achievable vacuum range.
 - Fabricate and validate the preliminary mechanical designs.
+- Develop and validate a mathematical plant model before claiming simulation results.
+
+## Reproduction and Simulation
+
+Start with the [Reproduction and Simulation Guide](docs/reproduction/simulation-and-reproduction-guide.md).
+
+It explains how to clone the repository, set up a Python environment, locate the experimental data and analysis scripts, and reproduce the documented analysis.
+
+The guide also distinguishes data-analysis reproduction from physical hardware reconstruction and plant simulation. The current repository does not claim to contain a validated, ready-to-run end-to-end pump simulation.
 
 ## Disclaimer
 
@@ -214,4 +206,4 @@ This repository documents an academic engineering prototype and experimental dev
 
 ---
 
-**Project focus:** Embedded Systems | Biomedical Instrumentation | Pressure Control | Microcontrollers | Experimental Characterization
+**Project focus:** Embedded Systems | Biomedical Instrumentation | Pressure Control | Microcontrollers | Experimental Characterisation
