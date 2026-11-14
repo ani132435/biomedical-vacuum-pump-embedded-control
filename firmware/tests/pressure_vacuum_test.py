@@ -4,531 +4,310 @@ from time import sleep, ticks_ms, ticks_diff
 from pressure_sensor import PressureSensor
 from motor import Motor
 
-
-# ============================================================
-# SETTINGS
-# ============================================================
-
-PWM_LEVELS = [
-    40,
-    50,
-    60,
-    70,
-    80,
-    90,
-    100
-]
-
-TEST_TIME = 30                  # seconds per PWM level
-
-STEADY_STATE_WINDOW = 10        # final 10 seconds
-
-ATMOSPHERE_TOLERANCE = 0.15     # mmHg
-
-MAX_TEST_VACUUM = -220          # mmHg emergency cutoff
-
-SAMPLE_INTERVAL = 0.1           # seconds
-
-
-# ============================================================
-# I2C SETUP
-# ============================================================
-
-i2c = I2C(
-    0,
-    scl=Pin(1),
-    sda=Pin(0),
-    freq=400000
+from config import (
+    I2C_ID,
+    I2C_SCL_PIN,
+    I2C_SDA_PIN,
+    I2C_FREQUENCY,
+    MOTOR_PWM_FREQUENCY
 )
 
 
 # ============================================================
-# PRESSURE SENSOR
+# TEST SETTINGS
 # ============================================================
 
-print()
-print("Creating pressure sensor...")
+PWM_LEVELS = [40, 50, 60, 70, 80, 90, 100]
 
-sensor = PressureSensor(
-    i2c,
-    alpha=0.85
-)
+TEST_TIME = 30
+STEADY_STATE_WINDOW = 10
 
-print("Pressure sensor ready")
+ATMOSPHERE_TOLERANCE = 0.15
+ATMOSPHERE_STABLE_SAMPLES = 10
+ATMOSPHERE_RESET_TIMEOUT = 60
 
+# Historical experimental cutoff only.
+# NOT a validated safety limit.
+MAX_TEST_VACUUM = -220.0
 
-# ============================================================
-# MOTOR
-# ============================================================
+SAMPLE_INTERVAL = 0.1
 
-motor = Motor()
-
-motor.stop()
-
-
-# ============================================================
-# TEST HEADER
-# ============================================================
-
-print()
-print("========================================")
-print("PWM - VACUUM CHARACTERIZATION TEST")
-print("========================================")
-print()
-
-print("PWM levels:")
-print(PWM_LEVELS)
-
-print()
-print("Test time:", TEST_TIME, "seconds")
-print(
-    "Steady-state window:",
-    STEADY_STATE_WINDOW,
-    "seconds"
-)
-
-print()
+FILTER_ALPHA = 0.85
+CALIBRATION_SAMPLES = 30
 
 
 # ============================================================
-# ATMOSPHERIC CALIBRATION
+# HARDWARE INITIALIZATION
 # ============================================================
 
-print("IMPORTANT:")
-print("Pump must be OFF.")
-print("Chamber must be at atmospheric pressure.")
-print()
-
-print("Calibrating atmospheric pressure...")
-print()
+motor = None
 
 
-atmosphere = sensor.calibrate_atmosphere(
-    samples=30
-)
+def initialize_hardware():
 
+    global motor
 
-print()
-print("========================================")
-print("CALIBRATION COMPLETE")
-print("========================================")
+    i2c = I2C(
+        I2C_ID,
+        scl=Pin(I2C_SCL_PIN),
+        sda=Pin(I2C_SDA_PIN),
+        freq=I2C_FREQUENCY
+    )
 
-print(
-    "Atmospheric pressure:",
-    round(atmosphere, 2),
-    "mmHg"
-)
+    sensor = PressureSensor(
+        i2c,
+        alpha=FILTER_ALPHA
+    )
 
-print()
+    motor = Motor(
+        pwm_freq=MOTOR_PWM_FREQUENCY
+    )
 
+    motor.stop()
 
-# ============================================================
-# RESULTS STORAGE
-# ============================================================
-
-results = []
+    return sensor
 
 
 # ============================================================
-# TEST LOOP
+# ATMOSPHERIC RESET
 # ============================================================
 
-try:
+def wait_for_atmospheric_reset(sensor, atmosphere):
 
-    for pwm in PWM_LEVELS:
+    print()
+    print("MANUAL ACTION REQUIRED:")
+    print("1. Open / vent the chamber.")
+    print("2. Allow atmospheric air to enter.")
+    print("3. Reseal the chamber.")
+    print()
 
+    print("Waiting for atmospheric reset...")
 
-        # ====================================================
-        # STOP MOTOR
-        # ====================================================
+    stable_count = 0
+    start_time = ticks_ms()
 
-        motor.stop()
+    while ticks_diff(
+        ticks_ms(),
+        start_time
+    ) < ATMOSPHERE_RESET_TIMEOUT * 1000:
 
+        absolute_pressure = sensor.read()
 
-        print()
-        print("========================================")
-        print("PREPARING PWM:", pwm, "%")
-        print("========================================")
-
-        print()
-        print("MANUAL ACTION REQUIRED:")
-        print("1. Open / vent the chamber.")
-        print("2. Allow atmospheric air to enter.")
-        print("3. Reseal the chamber.")
-        print()
+        vacuum = absolute_pressure - atmosphere
 
         print(
-            "Waiting for vacuum to return near 0 mmHg..."
+            "RESET VAC:",
+            round(vacuum, 2),
+            "mmHg"
         )
 
+        if abs(vacuum) <= ATMOSPHERE_TOLERANCE:
+            stable_count += 1
+        else:
+            stable_count = 0
 
-        # ====================================================
-        # ATMOSPHERIC RESET VERIFICATION
-        # ====================================================
+        if stable_count >= ATMOSPHERE_STABLE_SAMPLES:
 
-        stable_count = 0
+            print("Atmospheric reset confirmed.")
+            return
 
+        sleep(SAMPLE_INTERVAL)
 
-        while True:
-
-            absolute_pressure = sensor.read()
-
-
-            vacuum = (
-                absolute_pressure
-                -
-                atmosphere
-            )
+    raise RuntimeError(
+        "Atmospheric reset timeout. Test aborted."
+    )
 
 
-            print(
-                "RESET VAC:",
-                round(vacuum, 2),
-                "mmHg"
-            )
+# ============================================================
+# SINGLE PWM CHARACTERIZATION
+# ============================================================
 
+def run_pwm_test(sensor, pwm, atmosphere):
 
-            if abs(vacuum) <= ATMOSPHERE_TOLERANCE:
+    motor.stop()
 
-                stable_count += 1
+    print()
+    print("Preparing PWM:", pwm, "%")
 
-            else:
+    wait_for_atmospheric_reset(
+        sensor,
+        atmosphere
+    )
 
-                stable_count = 0
+    print("Starting in 3 seconds...")
+    sleep(3)
 
+    vacuum_sum = 0.0
+    vacuum_min = 0.0
 
-            # Require 10 consecutive stable readings
+    sample_count = 0
 
-            if stable_count >= 10:
+    steady_state_sum = 0.0
+    steady_state_count = 0
 
-                break
+    start_time = ticks_ms()
 
+    motor.forward()
+    motor.set_speed(pwm)
 
-            sleep(SAMPLE_INTERVAL)
-
-
-        print()
-        print("Atmospheric reset confirmed.")
-
-        print(
-            "Starting",
-            pwm,
-            "% PWM test in 3 seconds..."
-        )
-
-        sleep(3)
-
-
-        # ====================================================
-        # START MOTOR
-        # ====================================================
-
-        motor.forward()
-
-        motor.set_speed(pwm)
-
-
-        print()
-        print("========================================")
-        print("TESTING PWM:", pwm, "%")
-        print("========================================")
-        print()
-
-
-        # ====================================================
-        # MEASUREMENT VARIABLES
-        # ====================================================
-
-        vacuum_sum = 0.0
-
-        vacuum_min = 0.0
-
-        sample_count = 0
-
-
-        steady_state_sum = 0.0
-
-        steady_state_count = 0
-
-
-        start_time = ticks_ms()
-
-
-        # ====================================================
-        # MEASUREMENT LOOP
-        # ====================================================
+    try:
 
         while ticks_diff(
             ticks_ms(),
             start_time
         ) < TEST_TIME * 1000:
 
-
             current_time = ticks_ms()
 
-
-            elapsed = (
-                ticks_diff(
-                    current_time,
-                    start_time
-                )
-                /
-                1000
-            )
-
-
-            # ------------------------------------------------
-            # PRESSURE
-            # ------------------------------------------------
+            elapsed = ticks_diff(
+                current_time,
+                start_time
+            ) / 1000.0
 
             absolute_pressure = sensor.read()
 
-
-            vacuum = (
-                absolute_pressure
-                -
-                atmosphere
-            )
-
-
-            # ------------------------------------------------
-            # SAFETY CUTOFF
-            # ------------------------------------------------
+            vacuum = absolute_pressure - atmosphere
 
             if vacuum <= MAX_TEST_VACUUM:
-
-                motor.stop()
-
-
-                print()
-                print("!!! VACUUM LIMIT REACHED !!!")
-
-
-                print(
-                    "Measured vacuum:",
-                    round(vacuum, 2),
-                    "mmHg"
-                )
-
-
                 raise RuntimeError(
-                    "Vacuum safety cutoff"
+                    "Historical test cutoff reached: "
+                    + str(vacuum)
+                    + " mmHg"
                 )
-
-
-            # ------------------------------------------------
-            # OVERALL DATA
-            # ------------------------------------------------
 
             vacuum_sum += vacuum
-
             sample_count += 1
 
-
             if vacuum < vacuum_min:
-
                 vacuum_min = vacuum
 
-
-            # ------------------------------------------------
-            # STEADY-STATE DATA
-            # FINAL 10 SECONDS
-            # ------------------------------------------------
-
-            if elapsed >= (
-                TEST_TIME
-                -
-                STEADY_STATE_WINDOW
-            ):
+            if elapsed >= TEST_TIME - STEADY_STATE_WINDOW:
 
                 steady_state_sum += vacuum
-
                 steady_state_count += 1
 
-
-            # ------------------------------------------------
-            # DISPLAY
-            # ------------------------------------------------
-
             print(
-                "TIME:",
-                round(elapsed, 1),
-                "s",
-                "| PWM:",
-                pwm,
-                "%",
-                "| ABS:",
-                round(absolute_pressure, 2),
+                "TIME:", round(elapsed, 1), "s",
+                "| PWM:", pwm, "%",
+                "| ABS:", round(absolute_pressure, 2),
                 "mmHg",
-                "| VAC:",
-                round(vacuum, 2),
+                "| VAC:", round(vacuum, 2),
                 "mmHg"
             )
 
-
             sleep(SAMPLE_INTERVAL)
 
-
-        # ====================================================
-        # STOP MOTOR
-        # ====================================================
-
+    finally:
         motor.stop()
 
+    if sample_count == 0:
+        raise RuntimeError("No valid measurement samples collected")
 
-        # ====================================================
-        # CALCULATE RESULTS
-        # ====================================================
+    average_vacuum = vacuum_sum / sample_count
 
-        average_vacuum = (
-            vacuum_sum
-            /
-            sample_count
+    if steady_state_count > 0:
+        steady_state_vacuum = (
+            steady_state_sum / steady_state_count
+        )
+    else:
+        steady_state_vacuum = None
+
+    return (
+        pwm,
+        average_vacuum,
+        steady_state_vacuum,
+        vacuum_min
+    )
+
+
+# ============================================================
+# APPLICATION
+# ============================================================
+
+def main():
+
+    try:
+
+        print()
+        print("========================================")
+        print("PWM - VACUUM CHARACTERIZATION TEST")
+        print("========================================")
+
+        sensor = initialize_hardware()
+
+        print()
+        print("Calibrating atmospheric pressure...")
+
+        atmosphere = sensor.calibrate_atmosphere(
+            samples=CALIBRATION_SAMPLES
         )
 
+        print(
+            "Atmospheric pressure:",
+            round(atmosphere, 2),
+            "mmHg"
+        )
 
-        if steady_state_count > 0:
+        results = []
 
-            steady_state_vacuum = (
-                steady_state_sum
-                /
-                steady_state_count
-            )
+        for pwm in PWM_LEVELS:
 
-        else:
-
-            steady_state_vacuum = 0
-
-
-        # ====================================================
-        # STORE RESULTS
-        # ====================================================
-
-        results.append(
-            (
+            result = run_pwm_test(
+                sensor,
                 pwm,
-                average_vacuum,
-                steady_state_vacuum,
-                vacuum_min
+                atmosphere
             )
-        )
 
+            results.append(result)
 
-        # ====================================================
-        # PWM RESULT
-        # ====================================================
+            print()
+            print("PWM:", pwm, "% COMPLETE")
+            print("Average vacuum:", round(result[1], 2))
+
+            if result[2] is not None:
+                print(
+                    "Steady-state vacuum:",
+                    round(result[2], 2)
+                )
+
+            print(
+                "Maximum observed vacuum:",
+                round(result[3], 2)
+            )
 
         print()
         print("========================================")
-
-        print(
-            "PWM",
-            pwm,
-            "% COMPLETE"
-        )
-
+        print("FINAL CHARACTERIZATION RESULTS")
         print("========================================")
 
+        print("PWM | AVG VAC | STEADY VAC | MAX OBS VAC")
 
-        print(
-            "Overall average vacuum:",
-            round(average_vacuum, 2),
-            "mmHg"
-        )
+        for result in results:
 
-
-        print(
-            "Steady-state vacuum:",
-            round(steady_state_vacuum, 2),
-            "mmHg"
-        )
-
-
-        print(
-            "Maximum observed vacuum:",
-            round(vacuum_min, 2),
-            "mmHg"
-        )
-
+            print(
+                result[0],
+                "|",
+                round(result[1], 2),
+                "|",
+                (
+                    round(result[2], 2)
+                    if result[2] is not None
+                    else "N/A"
+                ),
+                "|",
+                round(result[3], 2)
+            )
 
         print()
+        print("CHARACTERIZATION COMPLETE")
+
+    finally:
+
+        if motor is not None:
+            motor.stop()
+
+        print("Motor stop command issued.")
 
 
-    # ========================================================
-    # ALL TESTS COMPLETE
-    # ========================================================
-
-    motor.stop()
-
-
-    print()
-    print("========================================")
-    print("FINAL PWM - VACUUM RESULTS")
-    print("========================================")
-
-    print()
-
-    print(
-        "PWM | AVG VAC | STEADY VAC | MAX OBS VAC"
-    )
-
-    print(
-        "-----------------------------------------"
-    )
-
-
-    for result in results:
-
-        pwm = result[0]
-
-        average = result[1]
-
-        steady = result[2]
-
-        maximum = result[3]
-
-
-        print(
-            pwm,
-            "|",
-            round(average, 2),
-            "|",
-            round(steady, 2),
-            "|",
-            round(maximum, 2)
-        )
-
-
-    print()
-    print("CHARACTERIZATION COMPLETE")
-    print("Pump stopped")
-
-
-# ============================================================
-# KEYBOARD STOP
-# ============================================================
-
-except KeyboardInterrupt:
-
-    motor.stop()
-
-    print()
-    print("TEST MANUALLY STOPPED")
-    print("Pump stopped")
-
-
-# ============================================================
-# ERROR STOP
-# ============================================================
-
-except Exception as error:
-
-    motor.stop()
-
-    print()
-    print("TEST STOPPED DUE TO ERROR")
-
-    print(
-        "Error:",
-        error
-    )
+if __name__ == "__main__":
+    main()
