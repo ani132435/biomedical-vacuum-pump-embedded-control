@@ -1,0 +1,35 @@
+"""
+Project Configuration
+Biomimetic Breast Pump
+"""
+
+
+TARGET_STIM = -120.0
+TARGET_EXPR = -180.0
+
+MAX_SAFE_VACUUM = -250.0
+
+
+
+KP = 1.2
+KI = 0.15
+
+CONTROL_PERIOD = 0.02
+
+
+
+PWM_FREQ = 20000
+
+PWM_MIN = 0
+PWM_MAX = 65535
+
+
+PRESSURE_INTERVAL = 20
+
+MOVING_AVERAGE_WINDOW = 5
+
+
+BUTTON_DEBOUNCE = 50
+
+
+ENABLE_LOGGING = True

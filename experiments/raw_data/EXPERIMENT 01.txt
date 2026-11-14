@@ -1,0 +1,545 @@
+EXPERIMENT 01
+PWM-BASED VACUUM RESPONSE CHARACTERIZATION
+
+Date:
+14 July 2026
+
+Project:
+Development of an Embedded Pressure-Control System for a Biomimetic Breast Pump
+
+Objective:
+To characterize the vacuum pressure response of the diaphragm pump
+at 80% and 100% PWM duty cycles using BMP280-based pressure
+measurement.
+
+Experimental Setup:
+- Microcontroller: Raspberry Pi Pico 2W
+- Firmware: MicroPython
+- Motor driver: L298N
+- Pump: KMDP diaphragm pump
+- Pressure sensor: BMP280
+- Communication: I2C
+- Pressure measurement: Atmospheric baseline referenced vacuum
+- Pneumatic configuration: Pump connected to test chamber
+- BMP280 placed within temporary sealed pneumatic chamber
+
+Test Parameters:
+PWM levels: 80%, 100%
+Settling time: 3 seconds
+Measurement time: 20 seconds per PWM level
+Sampling delay: 0.1 seconds
+Pressure unit: mmHg
+
+Atmospheric Baseline:
+706.04 mmHg
+
+RESULTS:
+
+80% PWM
+Average vacuum: -2.83 mmHg
+Maximum measured vacuum: -2.98 mmHg
+
+100% PWM
+Average vacuum: -4.88 mmHg
+Maximum measured vacuum: -6.45 mmHg
+
+OBSERVATIONS:
+1. A measurable reduction in chamber pressure was observed with
+   increasing PWM duty cycle.
+
+2. At 80% PWM, the pressure response gradually approached an
+   approximately steady vacuum region.
+
+3. Increasing the PWM duty cycle to 100% resulted in a larger
+   pressure differential.
+
+4. The 100% PWM test was performed immediately after the 80% PWM
+   test without venting the chamber. Therefore, the 100% test
+   represents a progressive pressure response rather than an
+   independent atmospheric-baseline pump-down test.
+
+5. No visually observed motor stalling occurred during this test.
+
+CONCLUSION:
+The experiment demonstrated that PWM-controlled pump actuation
+produced a measurable vacuum response that could be detected using
+the BMP280 pressure sensor. The results supported further evaluation
+of the pump-pressure system for feedback control.
+
+------------------------------------------------------------
+RAW THONNY OUTPUT
+------------------------------------------------------------
+
+>>> %Run -c $EDITOR_CONTENT
+
+MPY: soft reboot
+
+Creating pressure sensor...
+I2C devices found: [72, 118]
+BMP280 detected at: 0x76
+BMP280 initialized
+Pressure sensor ready
+Motor initialized
+PWM frequency: 1000 Hz
+Motor stopped
+
+========================================
+PWM - VACUUM CHARACTERIZATION TEST
+========================================
+
+IMPORTANT:
+Keep pump OFF during calibration.
+Do not open the airtight chamber.
+
+Calibrating atmospheric pressure...
+
+Collecting 30 atmospheric samples...
+CAL: 1 / 30 | 705.01 mmHg
+CAL: 2 / 30 | 705.01 mmHg
+CAL: 3 / 30 | 705.01 mmHg
+CAL: 4 / 30 | 705.01 mmHg
+CAL: 5 / 30 | 705.02 mmHg
+CAL: 6 / 30 | 705.02 mmHg
+CAL: 7 / 30 | 705.02 mmHg
+CAL: 8 / 30 | 705.02 mmHg
+CAL: 9 / 30 | 705.01 mmHg
+CAL: 10 / 30 | 705.01 mmHg
+CAL: 11 / 30 | 705.01 mmHg
+CAL: 12 / 30 | 705.01 mmHg
+CAL: 13 / 30 | 705.01 mmHg
+CAL: 14 / 30 | 705.01 mmHg
+CAL: 15 / 30 | 705.01 mmHg
+CAL: 16 / 30 | 705.01 mmHg
+CAL: 17 / 30 | 705.01 mmHg
+CAL: 18 / 30 | 705.02 mmHg
+CAL: 19 / 30 | 705.02 mmHg
+CAL: 20 / 30 | 705.02 mmHg
+CAL: 21 / 30 | 705.02 mmHg
+CAL: 22 / 30 | 705.02 mmHg
+CAL: 23 / 30 | 705.03 mmHg
+CAL: 24 / 30 | 705.03 mmHg
+CAL: 25 / 30 | 705.03 mmHg
+CAL: 26 / 30 | 705.02 mmHg
+CAL: 27 / 30 | 705.02 mmHg
+CAL: 28 / 30 | 705.02 mmHg
+CAL: 29 / 30 | 705.01 mmHg
+CAL: 30 / 30 | 705.01 mmHg
+
+========================================
+CALIBRATION COMPLETE
+========================================
+Atmospheric pressure: 705.02 mmHg
+
+Motor direction: FORWARD
+
+========================================
+TESTING PWM: 80 %
+========================================
+Motor PWM: 80 % | Duty: 52428
+Allowing pressure to settle...
+PWM: 80 % | ABS: 705.01 mmHg | VAC: -0.01 mmHg
+PWM: 80 % | ABS: 704.58 mmHg | VAC: -0.44 mmHg
+PWM: 80 % | ABS: 704.19 mmHg | VAC: -0.83 mmHg
+PWM: 80 % | ABS: 703.89 mmHg | VAC: -1.13 mmHg
+PWM: 80 % | ABS: 703.61 mmHg | VAC: -1.4 mmHg
+PWM: 80 % | ABS: 703.39 mmHg | VAC: -1.63 mmHg
+PWM: 80 % | ABS: 703.2 mmHg | VAC: -1.82 mmHg
+PWM: 80 % | ABS: 703.03 mmHg | VAC: -1.98 mmHg
+PWM: 80 % | ABS: 702.9 mmHg | VAC: -2.12 mmHg
+PWM: 80 % | ABS: 702.76 mmHg | VAC: -2.26 mmHg
+PWM: 80 % | ABS: 702.66 mmHg | VAC: -2.35 mmHg
+PWM: 80 % | ABS: 702.57 mmHg | VAC: -2.44 mmHg
+PWM: 80 % | ABS: 702.5 mmHg | VAC: -2.52 mmHg
+PWM: 80 % | ABS: 702.44 mmHg | VAC: -2.58 mmHg
+PWM: 80 % | ABS: 702.38 mmHg | VAC: -2.64 mmHg
+PWM: 80 % | ABS: 702.35 mmHg | VAC: -2.67 mmHg
+PWM: 80 % | ABS: 702.3 mmHg | VAC: -2.71 mmHg
+PWM: 80 % | ABS: 702.27 mmHg | VAC: -2.74 mmHg
+PWM: 80 % | ABS: 702.24 mmHg | VAC: -2.77 mmHg
+PWM: 80 % | ABS: 702.22 mmHg | VAC: -2.79 mmHg
+PWM: 80 % | ABS: 702.21 mmHg | VAC: -2.8 mmHg
+PWM: 80 % | ABS: 702.18 mmHg | VAC: -2.83 mmHg
+PWM: 80 % | ABS: 702.17 mmHg | VAC: -2.84 mmHg
+PWM: 80 % | ABS: 702.16 mmHg | VAC: -2.86 mmHg
+PWM: 80 % | ABS: 702.14 mmHg | VAC: -2.87 mmHg
+PWM: 80 % | ABS: 702.14 mmHg | VAC: -2.88 mmHg
+PWM: 80 % | ABS: 702.12 mmHg | VAC: -2.9 mmHg
+PWM: 80 % | ABS: 702.13 mmHg | VAC: -2.89 mmHg
+PWM: 80 % | ABS: 702.12 mmHg | VAC: -2.9 mmHg
+PWM: 80 % | ABS: 702.12 mmHg | VAC: -2.9 mmHg
+PWM: 80 % | ABS: 702.12 mmHg | VAC: -2.9 mmHg
+PWM: 80 % | ABS: 702.11 mmHg | VAC: -2.9 mmHg
+PWM: 80 % | ABS: 702.13 mmHg | VAC: -2.89 mmHg
+PWM: 80 % | ABS: 702.12 mmHg | VAC: -2.89 mmHg
+PWM: 80 % | ABS: 702.12 mmHg | VAC: -2.89 mmHg
+PWM: 80 % | ABS: 702.13 mmHg | VAC: -2.89 mmHg
+PWM: 80 % | ABS: 702.12 mmHg | VAC: -2.89 mmHg
+PWM: 80 % | ABS: 702.13 mmHg | VAC: -2.88 mmHg
+PWM: 80 % | ABS: 702.12 mmHg | VAC: -2.9 mmHg
+PWM: 80 % | ABS: 702.12 mmHg | VAC: -2.9 mmHg
+PWM: 80 % | ABS: 702.12 mmHg | VAC: -2.9 mmHg
+PWM: 80 % | ABS: 702.12 mmHg | VAC: -2.9 mmHg
+PWM: 80 % | ABS: 702.12 mmHg | VAC: -2.89 mmHg
+PWM: 80 % | ABS: 702.1 mmHg | VAC: -2.91 mmHg
+PWM: 80 % | ABS: 702.11 mmHg | VAC: -2.91 mmHg
+PWM: 80 % | ABS: 702.11 mmHg | VAC: -2.91 mmHg
+PWM: 80 % | ABS: 702.1 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.1 mmHg | VAC: -2.91 mmHg
+PWM: 80 % | ABS: 702.09 mmHg | VAC: -2.93 mmHg
+PWM: 80 % | ABS: 702.09 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.1 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.1 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.1 mmHg | VAC: -2.91 mmHg
+PWM: 80 % | ABS: 702.09 mmHg | VAC: -2.93 mmHg
+PWM: 80 % | ABS: 702.1 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.1 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.09 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.1 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.08 mmHg | VAC: -2.93 mmHg
+PWM: 80 % | ABS: 702.1 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.09 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.1 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.1 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.08 mmHg | VAC: -2.93 mmHg
+PWM: 80 % | ABS: 702.1 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.1 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.09 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.1 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.08 mmHg | VAC: -2.94 mmHg
+PWM: 80 % | ABS: 702.08 mmHg | VAC: -2.93 mmHg
+PWM: 80 % | ABS: 702.08 mmHg | VAC: -2.94 mmHg
+PWM: 80 % | ABS: 702.08 mmHg | VAC: -2.94 mmHg
+PWM: 80 % | ABS: 702.09 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.08 mmHg | VAC: -2.94 mmHg
+PWM: 80 % | ABS: 702.08 mmHg | VAC: -2.94 mmHg
+PWM: 80 % | ABS: 702.08 mmHg | VAC: -2.93 mmHg
+PWM: 80 % | ABS: 702.07 mmHg | VAC: -2.94 mmHg
+PWM: 80 % | ABS: 702.08 mmHg | VAC: -2.93 mmHg
+PWM: 80 % | ABS: 702.07 mmHg | VAC: -2.94 mmHg
+PWM: 80 % | ABS: 702.07 mmHg | VAC: -2.95 mmHg
+PWM: 80 % | ABS: 702.07 mmHg | VAC: -2.94 mmHg
+PWM: 80 % | ABS: 702.06 mmHg | VAC: -2.95 mmHg
+PWM: 80 % | ABS: 702.08 mmHg | VAC: -2.94 mmHg
+PWM: 80 % | ABS: 702.08 mmHg | VAC: -2.93 mmHg
+PWM: 80 % | ABS: 702.08 mmHg | VAC: -2.94 mmHg
+PWM: 80 % | ABS: 702.08 mmHg | VAC: -2.93 mmHg
+PWM: 80 % | ABS: 702.07 mmHg | VAC: -2.95 mmHg
+PWM: 80 % | ABS: 702.08 mmHg | VAC: -2.94 mmHg
+PWM: 80 % | ABS: 702.08 mmHg | VAC: -2.94 mmHg
+PWM: 80 % | ABS: 702.07 mmHg | VAC: -2.95 mmHg
+PWM: 80 % | ABS: 702.08 mmHg | VAC: -2.93 mmHg
+PWM: 80 % | ABS: 702.07 mmHg | VAC: -2.94 mmHg
+PWM: 80 % | ABS: 702.08 mmHg | VAC: -2.93 mmHg
+PWM: 80 % | ABS: 702.08 mmHg | VAC: -2.94 mmHg
+PWM: 80 % | ABS: 702.08 mmHg | VAC: -2.94 mmHg
+PWM: 80 % | ABS: 702.09 mmHg | VAC: -2.93 mmHg
+PWM: 80 % | ABS: 702.08 mmHg | VAC: -2.93 mmHg
+PWM: 80 % | ABS: 702.09 mmHg | VAC: -2.93 mmHg
+PWM: 80 % | ABS: 702.09 mmHg | VAC: -2.93 mmHg
+PWM: 80 % | ABS: 702.08 mmHg | VAC: -2.94 mmHg
+PWM: 80 % | ABS: 702.1 mmHg | VAC: -2.91 mmHg
+PWM: 80 % | ABS: 702.1 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.1 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.1 mmHg | VAC: -2.91 mmHg
+PWM: 80 % | ABS: 702.1 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.1 mmHg | VAC: -2.91 mmHg
+PWM: 80 % | ABS: 702.09 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.09 mmHg | VAC: -2.93 mmHg
+PWM: 80 % | ABS: 702.09 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.08 mmHg | VAC: -2.94 mmHg
+PWM: 80 % | ABS: 702.09 mmHg | VAC: -2.93 mmHg
+PWM: 80 % | ABS: 702.09 mmHg | VAC: -2.93 mmHg
+PWM: 80 % | ABS: 702.08 mmHg | VAC: -2.94 mmHg
+PWM: 80 % | ABS: 702.09 mmHg | VAC: -2.93 mmHg
+PWM: 80 % | ABS: 702.08 mmHg | VAC: -2.94 mmHg
+PWM: 80 % | ABS: 702.08 mmHg | VAC: -2.93 mmHg
+PWM: 80 % | ABS: 702.08 mmHg | VAC: -2.93 mmHg
+PWM: 80 % | ABS: 702.08 mmHg | VAC: -2.94 mmHg
+PWM: 80 % | ABS: 702.1 mmHg | VAC: -2.91 mmHg
+PWM: 80 % | ABS: 702.1 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.09 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.1 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.08 mmHg | VAC: -2.93 mmHg
+PWM: 80 % | ABS: 702.1 mmHg | VAC: -2.91 mmHg
+PWM: 80 % | ABS: 702.1 mmHg | VAC: -2.91 mmHg
+PWM: 80 % | ABS: 702.1 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.1 mmHg | VAC: -2.91 mmHg
+PWM: 80 % | ABS: 702.09 mmHg | VAC: -2.93 mmHg
+PWM: 80 % | ABS: 702.1 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.1 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.1 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.11 mmHg | VAC: -2.91 mmHg
+PWM: 80 % | ABS: 702.09 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.09 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.09 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.08 mmHg | VAC: -2.94 mmHg
+PWM: 80 % | ABS: 702.09 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.09 mmHg | VAC: -2.93 mmHg
+PWM: 80 % | ABS: 702.08 mmHg | VAC: -2.93 mmHg
+PWM: 80 % | ABS: 702.1 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.09 mmHg | VAC: -2.93 mmHg
+PWM: 80 % | ABS: 702.09 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.09 mmHg | VAC: -2.93 mmHg
+PWM: 80 % | ABS: 702.09 mmHg | VAC: -2.93 mmHg
+PWM: 80 % | ABS: 702.1 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.09 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.09 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.1 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.09 mmHg | VAC: -2.93 mmHg
+PWM: 80 % | ABS: 702.1 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.1 mmHg | VAC: -2.91 mmHg
+PWM: 80 % | ABS: 702.1 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.11 mmHg | VAC: -2.91 mmHg
+PWM: 80 % | ABS: 702.09 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.09 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.1 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.08 mmHg | VAC: -2.93 mmHg
+PWM: 80 % | ABS: 702.1 mmHg | VAC: -2.92 mmHg
+PWM: 80 % | ABS: 702.09 mmHg | VAC: -2.93 mmHg
+PWM: 80 % | ABS: 702.09 mmHg | VAC: -2.93 mmHg
+PWM: 80 % | ABS: 702.09 mmHg | VAC: -2.93 mmHg
+PWM: 80 % | ABS: 702.07 mmHg | VAC: -2.94 mmHg
+PWM: 80 % | ABS: 702.08 mmHg | VAC: -2.93 mmHg
+PWM: 80 % | ABS: 702.08 mmHg | VAC: -2.93 mmHg
+PWM: 80 % | ABS: 702.08 mmHg | VAC: -2.94 mmHg
+PWM: 80 % | ABS: 702.08 mmHg | VAC: -2.93 mmHg
+PWM: 80 % | ABS: 702.07 mmHg | VAC: -2.95 mmHg
+PWM: 80 % | ABS: 702.07 mmHg | VAC: -2.95 mmHg
+PWM: 80 % | ABS: 702.07 mmHg | VAC: -2.94 mmHg
+PWM: 80 % | ABS: 702.06 mmHg | VAC: -2.96 mmHg
+PWM: 80 % | ABS: 702.07 mmHg | VAC: -2.94 mmHg
+PWM: 80 % | ABS: 702.06 mmHg | VAC: -2.95 mmHg
+PWM: 80 % | ABS: 702.06 mmHg | VAC: -2.96 mmHg
+PWM: 80 % | ABS: 702.06 mmHg | VAC: -2.96 mmHg
+PWM: 80 % | ABS: 702.05 mmHg | VAC: -2.97 mmHg
+PWM: 80 % | ABS: 702.05 mmHg | VAC: -2.97 mmHg
+PWM: 80 % | ABS: 702.05 mmHg | VAC: -2.97 mmHg
+PWM: 80 % | ABS: 702.03 mmHg | VAC: -2.98 mmHg
+PWM: 80 % | ABS: 702.05 mmHg | VAC: -2.97 mmHg
+PWM: 80 % | ABS: 702.05 mmHg | VAC: -2.96 mmHg
+PWM: 80 % | ABS: 702.05 mmHg | VAC: -2.96 mmHg
+PWM: 80 % | ABS: 702.06 mmHg | VAC: -2.96 mmHg
+PWM: 80 % | ABS: 702.05 mmHg | VAC: -2.97 mmHg
+PWM: 80 % | ABS: 702.05 mmHg | VAC: -2.97 mmHg
+PWM: 80 % | ABS: 702.06 mmHg | VAC: -2.96 mmHg
+PWM: 80 % | ABS: 702.04 mmHg | VAC: -2.97 mmHg
+PWM: 80 % | ABS: 702.06 mmHg | VAC: -2.96 mmHg
+PWM: 80 % | ABS: 702.06 mmHg | VAC: -2.95 mmHg
+PWM: 80 % | ABS: 702.06 mmHg | VAC: -2.96 mmHg
+
+PWM 80 % COMPLETE
+Average vacuum: -2.83 mmHg
+Maximum measured vacuum: -2.98 mmHg
+
+========================================
+TESTING PWM: 100 %
+========================================
+Motor PWM: 100 % | Duty: 65535
+Allowing pressure to settle...
+PWM: 100 % | ABS: 702.08 mmHg | VAC: -2.94 mmHg
+PWM: 100 % | ABS: 702.02 mmHg | VAC: -3.0 mmHg
+PWM: 100 % | ABS: 701.98 mmHg | VAC: -3.04 mmHg
+PWM: 100 % | ABS: 701.93 mmHg | VAC: -3.08 mmHg
+PWM: 100 % | ABS: 701.9 mmHg | VAC: -3.11 mmHg
+PWM: 100 % | ABS: 701.89 mmHg | VAC: -3.13 mmHg
+PWM: 100 % | ABS: 701.86 mmHg | VAC: -3.15 mmHg
+PWM: 100 % | ABS: 701.85 mmHg | VAC: -3.17 mmHg
+PWM: 100 % | ABS: 701.83 mmHg | VAC: -3.19 mmHg
+PWM: 100 % | ABS: 701.8 mmHg | VAC: -3.21 mmHg
+PWM: 100 % | ABS: 701.77 mmHg | VAC: -3.24 mmHg
+PWM: 100 % | ABS: 701.73 mmHg | VAC: -3.28 mmHg
+PWM: 100 % | ABS: 701.69 mmHg | VAC: -3.33 mmHg
+PWM: 100 % | ABS: 701.63 mmHg | VAC: -3.38 mmHg
+PWM: 100 % | ABS: 701.59 mmHg | VAC: -3.43 mmHg
+PWM: 100 % | ABS: 701.56 mmHg | VAC: -3.46 mmHg
+PWM: 100 % | ABS: 701.54 mmHg | VAC: -3.47 mmHg
+PWM: 100 % | ABS: 701.52 mmHg | VAC: -3.49 mmHg
+PWM: 100 % | ABS: 701.49 mmHg | VAC: -3.53 mmHg
+PWM: 100 % | ABS: 701.45 mmHg | VAC: -3.57 mmHg
+PWM: 100 % | ABS: 701.43 mmHg | VAC: -3.59 mmHg
+PWM: 100 % | ABS: 701.41 mmHg | VAC: -3.6 mmHg
+PWM: 100 % | ABS: 701.38 mmHg | VAC: -3.64 mmHg
+PWM: 100 % | ABS: 701.35 mmHg | VAC: -3.67 mmHg
+PWM: 100 % | ABS: 701.34 mmHg | VAC: -3.67 mmHg
+PWM: 100 % | ABS: 701.31 mmHg | VAC: -3.7 mmHg
+PWM: 100 % | ABS: 701.29 mmHg | VAC: -3.72 mmHg
+PWM: 100 % | ABS: 701.27 mmHg | VAC: -3.74 mmHg
+PWM: 100 % | ABS: 701.24 mmHg | VAC: -3.78 mmHg
+PWM: 100 % | ABS: 701.23 mmHg | VAC: -3.79 mmHg
+PWM: 100 % | ABS: 701.19 mmHg | VAC: -3.82 mmHg
+PWM: 100 % | ABS: 701.18 mmHg | VAC: -3.83 mmHg
+PWM: 100 % | ABS: 701.15 mmHg | VAC: -3.87 mmHg
+PWM: 100 % | ABS: 701.13 mmHg | VAC: -3.89 mmHg
+PWM: 100 % | ABS: 701.1 mmHg | VAC: -3.92 mmHg
+PWM: 100 % | ABS: 701.08 mmHg | VAC: -3.93 mmHg
+PWM: 100 % | ABS: 701.05 mmHg | VAC: -3.97 mmHg
+PWM: 100 % | ABS: 701.04 mmHg | VAC: -3.98 mmHg
+PWM: 100 % | ABS: 701.0 mmHg | VAC: -4.02 mmHg
+PWM: 100 % | ABS: 700.98 mmHg | VAC: -4.04 mmHg
+PWM: 100 % | ABS: 700.96 mmHg | VAC: -4.06 mmHg
+PWM: 100 % | ABS: 700.92 mmHg | VAC: -4.1 mmHg
+PWM: 100 % | ABS: 700.9 mmHg | VAC: -4.11 mmHg
+PWM: 100 % | ABS: 700.89 mmHg | VAC: -4.13 mmHg
+PWM: 100 % | ABS: 700.85 mmHg | VAC: -4.17 mmHg
+PWM: 100 % | ABS: 700.83 mmHg | VAC: -4.18 mmHg
+PWM: 100 % | ABS: 700.81 mmHg | VAC: -4.2 mmHg
+PWM: 100 % | ABS: 700.79 mmHg | VAC: -4.23 mmHg
+PWM: 100 % | ABS: 700.75 mmHg | VAC: -4.27 mmHg
+PWM: 100 % | ABS: 700.73 mmHg | VAC: -4.28 mmHg
+PWM: 100 % | ABS: 700.72 mmHg | VAC: -4.3 mmHg
+PWM: 100 % | ABS: 700.7 mmHg | VAC: -4.32 mmHg
+PWM: 100 % | ABS: 700.66 mmHg | VAC: -4.35 mmHg
+PWM: 100 % | ABS: 700.62 mmHg | VAC: -4.39 mmHg
+PWM: 100 % | ABS: 700.59 mmHg | VAC: -4.42 mmHg
+PWM: 100 % | ABS: 700.57 mmHg | VAC: -4.44 mmHg
+PWM: 100 % | ABS: 700.56 mmHg | VAC: -4.45 mmHg
+PWM: 100 % | ABS: 700.56 mmHg | VAC: -4.46 mmHg
+PWM: 100 % | ABS: 700.55 mmHg | VAC: -4.47 mmHg
+PWM: 100 % | ABS: 700.54 mmHg | VAC: -4.48 mmHg
+PWM: 100 % | ABS: 700.52 mmHg | VAC: -4.49 mmHg
+PWM: 100 % | ABS: 700.51 mmHg | VAC: -4.51 mmHg
+PWM: 100 % | ABS: 700.49 mmHg | VAC: -4.52 mmHg
+PWM: 100 % | ABS: 700.48 mmHg | VAC: -4.54 mmHg
+PWM: 100 % | ABS: 700.46 mmHg | VAC: -4.56 mmHg
+PWM: 100 % | ABS: 700.44 mmHg | VAC: -4.58 mmHg
+PWM: 100 % | ABS: 700.41 mmHg | VAC: -4.6 mmHg
+PWM: 100 % | ABS: 700.39 mmHg | VAC: -4.63 mmHg
+PWM: 100 % | ABS: 700.34 mmHg | VAC: -4.68 mmHg
+PWM: 100 % | ABS: 700.3 mmHg | VAC: -4.72 mmHg
+PWM: 100 % | ABS: 700.27 mmHg | VAC: -4.74 mmHg
+PWM: 100 % | ABS: 700.26 mmHg | VAC: -4.76 mmHg
+PWM: 100 % | ABS: 700.26 mmHg | VAC: -4.76 mmHg
+PWM: 100 % | ABS: 700.25 mmHg | VAC: -4.76 mmHg
+PWM: 100 % | ABS: 700.23 mmHg | VAC: -4.78 mmHg
+PWM: 100 % | ABS: 700.2 mmHg | VAC: -4.82 mmHg
+PWM: 100 % | ABS: 700.18 mmHg | VAC: -4.84 mmHg
+PWM: 100 % | ABS: 700.17 mmHg | VAC: -4.84 mmHg
+PWM: 100 % | ABS: 700.18 mmHg | VAC: -4.83 mmHg
+PWM: 100 % | ABS: 700.2 mmHg | VAC: -4.82 mmHg
+PWM: 100 % | ABS: 700.2 mmHg | VAC: -4.82 mmHg
+PWM: 100 % | ABS: 700.19 mmHg | VAC: -4.82 mmHg
+PWM: 100 % | ABS: 700.18 mmHg | VAC: -4.84 mmHg
+PWM: 100 % | ABS: 700.16 mmHg | VAC: -4.85 mmHg
+PWM: 100 % | ABS: 700.16 mmHg | VAC: -4.85 mmHg
+PWM: 100 % | ABS: 700.18 mmHg | VAC: -4.84 mmHg
+PWM: 100 % | ABS: 700.2 mmHg | VAC: -4.82 mmHg
+PWM: 100 % | ABS: 700.22 mmHg | VAC: -4.79 mmHg
+PWM: 100 % | ABS: 700.23 mmHg | VAC: -4.79 mmHg
+PWM: 100 % | ABS: 700.23 mmHg | VAC: -4.79 mmHg
+PWM: 100 % | ABS: 700.21 mmHg | VAC: -4.81 mmHg
+PWM: 100 % | ABS: 700.19 mmHg | VAC: -4.83 mmHg
+PWM: 100 % | ABS: 700.18 mmHg | VAC: -4.84 mmHg
+PWM: 100 % | ABS: 700.18 mmHg | VAC: -4.84 mmHg
+PWM: 100 % | ABS: 700.19 mmHg | VAC: -4.83 mmHg
+PWM: 100 % | ABS: 700.18 mmHg | VAC: -4.83 mmHg
+PWM: 100 % | ABS: 700.16 mmHg | VAC: -4.86 mmHg
+PWM: 100 % | ABS: 700.14 mmHg | VAC: -4.88 mmHg
+PWM: 100 % | ABS: 700.14 mmHg | VAC: -4.88 mmHg
+PWM: 100 % | ABS: 700.13 mmHg | VAC: -4.88 mmHg
+PWM: 100 % | ABS: 700.11 mmHg | VAC: -4.9 mmHg
+PWM: 100 % | ABS: 700.09 mmHg | VAC: -4.92 mmHg
+PWM: 100 % | ABS: 700.08 mmHg | VAC: -4.94 mmHg
+PWM: 100 % | ABS: 700.09 mmHg | VAC: -4.93 mmHg
+PWM: 100 % | ABS: 700.08 mmHg | VAC: -4.94 mmHg
+PWM: 100 % | ABS: 700.05 mmHg | VAC: -4.96 mmHg
+PWM: 100 % | ABS: 700.04 mmHg | VAC: -4.98 mmHg
+PWM: 100 % | ABS: 700.04 mmHg | VAC: -4.97 mmHg
+PWM: 100 % | ABS: 700.02 mmHg | VAC: -4.99 mmHg
+PWM: 100 % | ABS: 700.0 mmHg | VAC: -5.02 mmHg
+PWM: 100 % | ABS: 699.99 mmHg | VAC: -5.03 mmHg
+PWM: 100 % | ABS: 699.98 mmHg | VAC: -5.04 mmHg
+PWM: 100 % | ABS: 699.95 mmHg | VAC: -5.06 mmHg
+PWM: 100 % | ABS: 699.95 mmHg | VAC: -5.06 mmHg
+PWM: 100 % | ABS: 699.94 mmHg | VAC: -5.08 mmHg
+PWM: 100 % | ABS: 699.91 mmHg | VAC: -5.1 mmHg
+PWM: 100 % | ABS: 699.91 mmHg | VAC: -5.11 mmHg
+PWM: 100 % | ABS: 699.87 mmHg | VAC: -5.14 mmHg
+PWM: 100 % | ABS: 699.87 mmHg | VAC: -5.15 mmHg
+PWM: 100 % | ABS: 699.86 mmHg | VAC: -5.16 mmHg
+PWM: 100 % | ABS: 699.83 mmHg | VAC: -5.19 mmHg
+PWM: 100 % | ABS: 699.83 mmHg | VAC: -5.19 mmHg
+PWM: 100 % | ABS: 699.79 mmHg | VAC: -5.22 mmHg
+PWM: 100 % | ABS: 699.79 mmHg | VAC: -5.22 mmHg
+PWM: 100 % | ABS: 699.76 mmHg | VAC: -5.25 mmHg
+PWM: 100 % | ABS: 699.76 mmHg | VAC: -5.25 mmHg
+PWM: 100 % | ABS: 699.73 mmHg | VAC: -5.29 mmHg
+PWM: 100 % | ABS: 699.73 mmHg | VAC: -5.29 mmHg
+PWM: 100 % | ABS: 699.69 mmHg | VAC: -5.32 mmHg
+PWM: 100 % | ABS: 699.7 mmHg | VAC: -5.32 mmHg
+PWM: 100 % | ABS: 699.66 mmHg | VAC: -5.36 mmHg
+PWM: 100 % | ABS: 699.66 mmHg | VAC: -5.36 mmHg
+PWM: 100 % | ABS: 699.63 mmHg | VAC: -5.38 mmHg
+PWM: 100 % | ABS: 699.62 mmHg | VAC: -5.39 mmHg
+PWM: 100 % | ABS: 699.6 mmHg | VAC: -5.42 mmHg
+PWM: 100 % | ABS: 699.58 mmHg | VAC: -5.44 mmHg
+PWM: 100 % | ABS: 699.58 mmHg | VAC: -5.44 mmHg
+PWM: 100 % | ABS: 699.54 mmHg | VAC: -5.47 mmHg
+PWM: 100 % | ABS: 699.53 mmHg | VAC: -5.48 mmHg
+PWM: 100 % | ABS: 699.52 mmHg | VAC: -5.49 mmHg
+PWM: 100 % | ABS: 699.49 mmHg | VAC: -5.53 mmHg
+PWM: 100 % | ABS: 699.46 mmHg | VAC: -5.56 mmHg
+PWM: 100 % | ABS: 699.45 mmHg | VAC: -5.56 mmHg
+PWM: 100 % | ABS: 699.43 mmHg | VAC: -5.58 mmHg
+PWM: 100 % | ABS: 699.39 mmHg | VAC: -5.63 mmHg
+PWM: 100 % | ABS: 699.35 mmHg | VAC: -5.67 mmHg
+PWM: 100 % | ABS: 699.33 mmHg | VAC: -5.69 mmHg
+PWM: 100 % | ABS: 699.31 mmHg | VAC: -5.7 mmHg
+PWM: 100 % | ABS: 699.31 mmHg | VAC: -5.71 mmHg
+PWM: 100 % | ABS: 699.29 mmHg | VAC: -5.72 mmHg
+PWM: 100 % | ABS: 699.28 mmHg | VAC: -5.74 mmHg
+PWM: 100 % | ABS: 699.25 mmHg | VAC: -5.77 mmHg
+PWM: 100 % | ABS: 699.23 mmHg | VAC: -5.79 mmHg
+PWM: 100 % | ABS: 699.2 mmHg | VAC: -5.81 mmHg
+PWM: 100 % | ABS: 699.18 mmHg | VAC: -5.83 mmHg
+PWM: 100 % | ABS: 699.16 mmHg | VAC: -5.85 mmHg
+PWM: 100 % | ABS: 699.14 mmHg | VAC: -5.88 mmHg
+PWM: 100 % | ABS: 699.12 mmHg | VAC: -5.9 mmHg
+PWM: 100 % | ABS: 699.09 mmHg | VAC: -5.92 mmHg
+PWM: 100 % | ABS: 699.06 mmHg | VAC: -5.96 mmHg
+PWM: 100 % | ABS: 699.01 mmHg | VAC: -6.0 mmHg
+PWM: 100 % | ABS: 698.96 mmHg | VAC: -6.06 mmHg
+PWM: 100 % | ABS: 698.92 mmHg | VAC: -6.09 mmHg
+PWM: 100 % | ABS: 698.89 mmHg | VAC: -6.12 mmHg
+PWM: 100 % | ABS: 698.88 mmHg | VAC: -6.13 mmHg
+PWM: 100 % | ABS: 698.87 mmHg | VAC: -6.14 mmHg
+PWM: 100 % | ABS: 698.87 mmHg | VAC: -6.15 mmHg
+PWM: 100 % | ABS: 698.85 mmHg | VAC: -6.17 mmHg
+PWM: 100 % | ABS: 698.82 mmHg | VAC: -6.2 mmHg
+PWM: 100 % | ABS: 698.79 mmHg | VAC: -6.22 mmHg
+PWM: 100 % | ABS: 698.77 mmHg | VAC: -6.24 mmHg
+PWM: 100 % | ABS: 698.77 mmHg | VAC: -6.25 mmHg
+PWM: 100 % | ABS: 698.76 mmHg | VAC: -6.25 mmHg
+PWM: 100 % | ABS: 698.75 mmHg | VAC: -6.27 mmHg
+PWM: 100 % | ABS: 698.72 mmHg | VAC: -6.29 mmHg
+PWM: 100 % | ABS: 698.7 mmHg | VAC: -6.32 mmHg
+PWM: 100 % | ABS: 698.69 mmHg | VAC: -6.32 mmHg
+PWM: 100 % | ABS: 698.69 mmHg | VAC: -6.33 mmHg
+PWM: 100 % | ABS: 698.67 mmHg | VAC: -6.34 mmHg
+PWM: 100 % | ABS: 698.65 mmHg | VAC: -6.37 mmHg
+PWM: 100 % | ABS: 698.64 mmHg | VAC: -6.37 mmHg
+PWM: 100 % | ABS: 698.64 mmHg | VAC: -6.37 mmHg
+PWM: 100 % | ABS: 698.63 mmHg | VAC: -6.38 mmHg
+PWM: 100 % | ABS: 698.61 mmHg | VAC: -6.41 mmHg
+PWM: 100 % | ABS: 698.6 mmHg | VAC: -6.42 mmHg
+PWM: 100 % | ABS: 698.61 mmHg | VAC: -6.41 mmHg
+PWM: 100 % | ABS: 698.58 mmHg | VAC: -6.43 mmHg
+PWM: 100 % | ABS: 698.56 mmHg | VAC: -6.45 mmHg
+PWM: 100 % | ABS: 698.57 mmHg | VAC: -6.45 mmHg
+
+PWM 100 % COMPLETE
+Average vacuum: -4.88 mmHg
+Maximum measured vacuum: -6.45 mmHg
+Motor stopped
+
+========================================
+FINAL RESULTS
+========================================
+
+PWM (%) | AVG VAC (mmHg) | MAX VAC (mmHg)
+------------------------------------------
+80 | -2.83 | -2.98
+100 | -4.88 | -6.45
+
+TEST COMPLETE
+Pump stopped
+>>>

@@ -1,0 +1,4 @@
+﻿pwm_duty_percent,sample_count,initial_pressure_mmhg,final_pressure_mmhg,mean_pressure_mmhg,std_dev_mmhg,most_negative_pressure_mmhg,least_negative_pressure_mmhg,vacuum_magnitude_increase_mmhg,plateau_detected,plateau_start_s,plateau_mean_pressure_mmhg
+80,16,0.0,-5.58,-5.09625,1.4228088416930786,-5.58,0.0,5.58,True,5.0,-5.58
+90,16,0.0,-8.22,-7.3675,2.0870729104018704,-8.22,0.0,8.22,True,11.0,-8.218
+100,16,0.0,-10.71,-7.61625,2.899866376231843,-10.71,0.0,10.71,False,,

@@ -1,0 +1,6 @@
+﻿experiment,segment,pwm_duty_percent,sample_count,first_vacuum_mmhg,last_vacuum_mmhg,mean_vacuum_mmhg,std_dev_mmhg,most_negative_vacuum_mmhg,least_negative_vacuum_mmhg,reported_average_mmhg,average_difference_mmhg,reported_maximum_vacuum_mmhg,maximum_difference_mmhg
+Experiment 01,1,80,189,-0.01,-2.96,-2.8262433862433864,0.391849357753016,-2.98,-0.01,-2.83,0.003756613756613625,-2.98,0.0
+Experiment 01,2,100,189,-2.94,-6.45,-4.876455026455027,0.9275147669516804,-6.45,-2.94,-4.88,0.0035449735449732955,-6.45,0.0
+Experiment 02,1,100,9,-4.98,-5.08,-5.036666666666666,0.03427827300200518,-5.08,-4.98,,,,
+Experiment 03,1,80,189,-0.02,-3.04,-2.9117460317460315,0.401668884286361,-3.08,-0.02,-2.91,-0.0017460317460313846,-3.08,0.0
+Experiment 03,2,100,189,-3.04,-5.65,-4.278359788359788,0.8372936123415967,-5.65,-2.92,-4.28,0.001640211640212108,-5.65,0.0

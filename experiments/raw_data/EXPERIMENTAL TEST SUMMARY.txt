@@ -1,0 +1,60 @@
+EXPERIMENTAL TEST SUMMARY
+Biomimetic Breast Pump Embedded Control Prototype
+Date: 14 July 2026
+
+TEST 01:
+Initial PWM–vacuum characterization.
+
+80% PWM:
+Average vacuum = -2.31 mmHg
+Maximum vacuum = -2.46 mmHg
+
+100% PWM:
+Average vacuum = -3.99 mmHg
+Maximum vacuum = -5.31 mmHg
+
+
+TEST 02:
+Repeated high-PWM test.
+
+Observation:
+Intermittent pump actuation loss and recovery observed during
+100% PWM operation.
+
+Pressure response:
+Repeated vacuum build-up followed by recovery toward atmospheric
+pressure and subsequent vacuum generation.
+
+
+TEST 03:
+Direct pump-to-BMP280 chamber characterization.
+
+Atmospheric baseline:
+705.02 mmHg
+
+80% PWM:
+Average vacuum = -2.91 mmHg
+Maximum vacuum = -3.08 mmHg
+
+100% PWM:
+Average vacuum = -4.28 mmHg
+Maximum vacuum = -5.75 mmHg
+
+Observation:
+Stable pump operation throughout the test.
+Direct pneumatic configuration produced a cleaner pressure response.
+
+PRIMARY CHARACTERIZATION RESULT:
+Test 03 is considered the primary PWM–vacuum characterization test.
+
+MAIN LIMITATION:
+The maximum measured pressure differential remained below the
+intended vacuum range for the final breast-pump application.
+
+PROPOSED NEXT DEVELOPMENT:
+- Improved pump power-delivery architecture
+- Appropriate vacuum/differential pressure sensor
+- Pneumatic sealing improvement
+- Active venting using a solenoid valve
+- Closed-loop pressure regulation
+- Biomimetic suction and release mode development
