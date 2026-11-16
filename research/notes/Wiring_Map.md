@@ -2,7 +2,7 @@
 
 ## Microcontroller
 
-* **Board:** Raspberry Pi Pico W
+* **Board:** Raspberry Pi Pico 2W
 * **Firmware:** MicroPython
 * **Development Interface:** USB + Thonny
 
@@ -30,7 +30,7 @@
 ## Development Mode
 
 Laptop USB
-→ Raspberry Pi Pico W
+→ Raspberry Pi Pico 2W
 
 18650 Battery
 → XL6009 Boost Converter
@@ -46,9 +46,9 @@ Laptop USB
 
 | L298N Pin  | Connected To                    |
 | ---------- | ------------------------------- |
-| ENA        | GP15 (PWM)                      |
-| IN1        | 3.3 V or GPIO (direction fixed) |
-| IN2        | GND or GPIO (direction fixed)   |
+| ENA        | GP2 (PWM)                      |
+| IN1        | GP3 (GPIO3)                    |
+| IN2        | GP4 (GPIO4)                    |
 | OUT1       | KMDP Pump Terminal 1            |
 | OUT2       | KMDP Pump Terminal 2            |
 | +12V / VIN | XL6009 24 V Output              |
@@ -97,17 +97,6 @@ A flyback diode should be connected across the valve terminals.
 
 ---
 
-# Push Buttons
-
-| Button   | Pico GPIO | Function     |
-| -------- | --------- | ------------ |
-| Button 1 | GP2       | Mode Select  |
-| Button 2 | GP3       | Start / Stop |
-
-Internal pull-up resistors may be enabled in software using `Pin.PULL_UP`.
-
----
-
 # Firmware Module Mapping
 
 | Firmware File    | Hardware Controlled          |
@@ -129,12 +118,12 @@ Internal pull-up resistors may be enabled in software using `Pin.PULL_UP`.
           USB
            │
            ▼
-   Raspberry Pi Pico W
+   Raspberry Pi Pico 2W
            │
    ┌───────┼───────────┐
    │       │           │
    ▼       ▼           ▼
- BMP280  Buttons   PWM (GP15)
+ BMP280  Motor GPIO (GP2-GP4)
    │                   │
    │                   ▼
    │               L298N Driver
@@ -159,4 +148,4 @@ Internal pull-up resistors may be enabled in software using `Pin.PULL_UP`.
 * The KMDP-U1 pump is the actuator.
 * The BMP280 is the feedback sensor.
 * The CKS5001/04 valve provides pneumatic flow control.
-* Closed-loop control will adjust PWM duty cycle based on measured chamber pressure.
+* Closed-loop pressure control is under development; PWM adjustment based on measured chamber pressure requires further tuning and validation.
